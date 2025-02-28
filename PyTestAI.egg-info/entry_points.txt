@@ -1,2 +1,0 @@
-[console_scripts]
-pytestai = PyTestAI.cli:main
