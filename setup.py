@@ -5,14 +5,14 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="PyTestAI",
-    version="0.1.0",
+    name="PyTestAI-Generator",
+    version="1.0.0",
     packages=find_packages(include=["PyTestAI", "PyTestAI.*"]),  
     install_requires=[
-        "requests>=2.32.3",
-        "colorama>=0.4.6",
-        "tqdm>=4.62.1",
-        "pytest>=8.3.4",
+        "requests>=2.25.1,<2.32.3",
+        "colorama>=0.4.6,<0.5.0",
+        "tqdm>=4.62.1,<4.67.1",
+        "pytest>=8.1.1,<8.4.4",
     ],
     entry_points={
         "console_scripts": [

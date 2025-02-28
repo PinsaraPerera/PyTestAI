@@ -1,6 +1,6 @@
-# PyTestAI 
+# PyTestAI-Generator
 
-`PyTestAI` is a **CLI tool** that automatically generates `pytest`-compatible test cases for your Python files using the **DeepSeek API**.  
+`PyTestAI-Generator` is a **CLI tool** that automatically generates `pytest`-compatible test cases for your Python files using the **DeepSeek API**.  
 It creates a ready-to-run test file (`test_<filename>.py`) in the same directory, ensuring **proper imports and test coverage**.
 
 ---
@@ -23,7 +23,7 @@ It creates a ready-to-run test file (`test_<filename>.py`) in the same directory
 
 ### **Install the package**  
 ```bash
-pip install PyTestAI
+pip install PyTestAI-Generator
 ```
 
 ### **Set the DeepSeek API Key**  
