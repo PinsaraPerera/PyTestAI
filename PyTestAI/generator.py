@@ -6,7 +6,7 @@ import requests
 import time
 import re
 from pathlib import Path
-from utils import get_api_key, payload_setup
+from .utils import get_api_key, payload_setup
 from colorama import Fore, Style, init
 
 # Initialize colorama for cross-platform support
