@@ -1,2 +1,4 @@
 requests
 colorama
+tqdm
+pytest

@@ -11,6 +11,8 @@ setup(
     install_requires=[
         "requests>=2.32.3",
         "colorama>=0.4.6",
+        "tqdm>=4.62.1",
+        "pytest>=8.3.4",
     ],
     entry_points={
         "console_scripts": [

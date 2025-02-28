@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 from .utils import get_api_key, payload_setup
 from colorama import Fore, Style, init
+from tqdm import tqdm
 
 # Initialize colorama for cross-platform support
 init(autoreset=True)
@@ -52,6 +53,13 @@ def generate_test_cases(file_path: Path) -> str:
 
     for attempt in range(1, MAX_RETRIES + 1):
         logging.info(Fore.CYAN + f"🔄 Generating test cases for file: {file_path} (Attempt {attempt}/{MAX_RETRIES})")
+
+        # Display a progress bar while waiting for response
+        with tqdm(total=5, desc="Processing", bar_format="{l_bar}{bar} {remaining}") as progress_bar:
+            for _ in range(5):
+                time.sleep(1)  # Simulate waiting time
+                progress_bar.update(1)
+
         response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload)
 
         if response.status_code == 429:  # Too Many Requests
