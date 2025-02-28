@@ -177,5 +177,5 @@ If you have any issues or questions, feel free to open an **issue** on the
 ## 👨‍💻 Author  
 
 **[Pawan Perera](https://www.pawanperera.com)**  
-- GitHub: [PinsaraPerera](https://github.com/PinsaraPerera)  
+- GitHub: [Pawan Perera](https://github.com/PinsaraPerera)  
 - Email: 1pawanpinsara@gmail.com  
