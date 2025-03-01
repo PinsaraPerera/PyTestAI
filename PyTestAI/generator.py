@@ -4,7 +4,6 @@ import os
 import logging
 import requests
 import time
-import re
 from pathlib import Path
 from .utils import get_api_key, payload_setup, extract_marked_definitions, clean_api_response
 from colorama import Fore, Style, init

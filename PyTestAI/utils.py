@@ -22,6 +22,7 @@ def get_api_key() -> str:
             "set DEEPSEEK_API_KEY='your_api_key_here'  (Windows CMD)\n"
             "$env:DEEPSEEK_API_KEY='your_api_key_here'  (PowerShell)"
         )
+    
     return api_key
 
 def payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat", tempreture: int = 1.0) -> dict:
