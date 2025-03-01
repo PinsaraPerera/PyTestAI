@@ -25,7 +25,7 @@ def _get_api_key() -> str:
     
     return api_key
 
-def _payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat", tempreture: int = 1.0) -> dict:
+def _payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat", temperature: int = 1.0) -> dict:
     """
     Prepare the API request payload.
 
@@ -35,7 +35,7 @@ def _payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat
     return {
         "model": "deepseek-chat",
         "model": model,
-        "tempreture": tempreture,
+        "temperature": temperature,
         "messages": [
             {
                 "role": "system",

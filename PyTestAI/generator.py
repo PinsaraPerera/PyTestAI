@@ -41,7 +41,7 @@ def generate_test_cases(file_path: Path) -> str:
     api_key = _get_api_key()
 
     # Prepare the API request payload
-    payload = _payload_setup(file_path=file_path, source_code=source_code, model="deepseek-chat", tempreture=1.0)
+    payload = _payload_setup(file_path=file_path, source_code=source_code, model="deepseek-chat", temperature=1.0)
 
     # Call the DeepSeek API with retries
     headers = {
