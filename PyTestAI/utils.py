@@ -62,7 +62,7 @@ def payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat"
 
 # source code extraction
 def extract_marked_definitions(file_path: Path) -> str:
-    """Extracts imports and functions/classes marked with @include_in_test and returns them as a single string."""
+    """Extracts imports and functions/classes marked with @include_in_test, keeping other decorators but removing @include_in_test."""
     
     with open(file_path, "r", encoding="utf-8") as f:
         source_code = f.read()
@@ -82,10 +82,17 @@ def extract_marked_definitions(file_path: Path) -> str:
         elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):  
             if any(isinstance(decorator, ast.Name) and decorator.id == "include_in_test" for decorator in node.decorator_list):
                 definition_code = ast.get_source_segment(source_code, node)
-                extracted_definitions.append(definition_code)
+                
+                # Capture all decorators except @include_in_test
+                decorators_code = [
+                    "@" + ast.get_source_segment(source_code, decorator)
+                    for decorator in node.decorator_list
+                    if not (isinstance(decorator, ast.Name) and decorator.id == "include_in_test")
+                ]
 
-    # initialize extracted_imports with PyTestAI import
-    extracted_imports.insert(0, "from PyTestAI import include_in_test")
+                # Combine decorators (without @include_in_test) and function/class definition
+                full_definition_code = "\n".join(decorators_code) + "\n" + definition_code if decorators_code else definition_code
+                extracted_definitions.append(full_definition_code.strip())
 
     # Construct the final source code string
     extracted_code = "\n".join(extracted_imports) + "\n\n" + "\n\n".join(extracted_definitions)
