@@ -92,4 +92,39 @@ def extract_marked_definitions(file_path: Path) -> str:
 
     return extracted_code.strip()
 
+def clean_api_response(api_response: str) -> str:
+    """
+    Extracts Python code from the API response while converting non-code parts into comments.
+
+    Args:
+        api_response (str): The raw response from the API.
+
+    Returns:
+        str: A cleaned-up version of the test code with comments.
+    """
+    # Extract Python code from markdown blocks
+    code_blocks = re.findall(r"```python(.*?)```", api_response, re.DOTALL)
+
+    # Extract text outside of code blocks
+    non_code_parts = re.split(r"```python.*?```", api_response, flags=re.DOTALL)
+
+    # Convert non-code parts into comments
+    # commented_text = "\n".join(
+    #     "\n".join(f"# {line}" for line in part.strip().split("\n")) if part.strip() else ""
+    #     for part in non_code_parts
+    # )
+
+    # multi line comment
+    commented_text = "\n".join(
+        f'"""{part.strip()}"""' if part.strip() else ""
+        for part in non_code_parts
+    )
+
+    # Combine commented text with extracted code
+    cleaned_code = f"{commented_text.strip()}\n\n" + "\n\n".join(code_blocks).strip()
+    
+    return cleaned_code.strip()
+
+
+
 
