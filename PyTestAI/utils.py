@@ -1,7 +1,10 @@
 # PyTestAI/utils.py
 import os
+import re
+import ast
+from pathlib import Path
 
-def get_api_key():
+def get_api_key() -> str:
     """
     Retrieves the DeepSeek API key from environment variables.
 
@@ -21,7 +24,7 @@ def get_api_key():
         )
     return api_key
 
-def payload_setup(file_path: str, source_code: str) -> dict:
+def payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat", tempreture: int = 1.0) -> dict:
     """
     Prepare the API request payload.
 
@@ -30,6 +33,8 @@ def payload_setup(file_path: str, source_code: str) -> dict:
     """
     return {
         "model": "deepseek-chat",
+        "model": model,
+        "tempreture": tempreture,
         "messages": [
             {
                 "role": "system",
@@ -54,3 +59,37 @@ def payload_setup(file_path: str, source_code: str) -> dict:
         ],
         "stream": False,
     }
+
+# source code extraction
+def extract_marked_definitions(file_path: Path) -> str:
+    """Extracts imports and functions/classes marked with @include_in_test and returns them as a single string."""
+    
+    with open(file_path, "r", encoding="utf-8") as f:
+        source_code = f.read()
+    
+    # Parse the source code into an AST
+    tree = ast.parse(source_code)
+
+    extracted_definitions = []
+    extracted_imports = []
+
+    for node in tree.body:
+        # Extract import statements
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            extracted_imports.append(ast.get_source_segment(source_code, node))
+        
+        # Extract functions and classes with @include_in_test
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):  
+            if any(isinstance(decorator, ast.Name) and decorator.id == "include_in_test" for decorator in node.decorator_list):
+                definition_code = ast.get_source_segment(source_code, node)
+                extracted_definitions.append(definition_code)
+
+    # initialize extracted_imports with PyTestAI import
+    extracted_imports.insert(0, "from PyTestAI import include_in_test")
+
+    # Construct the final source code string
+    extracted_code = "\n".join(extracted_imports) + "\n\n" + "\n\n".join(extracted_definitions)
+
+    return extracted_code.strip()
+
+
