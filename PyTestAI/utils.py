@@ -114,7 +114,10 @@ def _extract_marked_definitions(file_path: Path) -> str:
     for node in tree.body:
         # Extract import statements
         if isinstance(node, (ast.Import, ast.ImportFrom)):
-            extracted_imports.append(ast.get_source_segment(source_code, node))
+            import_code = ast.get_source_segment(source_code, node)
+            # Exclude 'from PyTestAI import include_in_test' from the imports
+            if "from PyTestAI import include_in_test" not in import_code:
+                extracted_imports.append(import_code)
         
         # Extract functions and classes with @include_in_test
         elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):  
