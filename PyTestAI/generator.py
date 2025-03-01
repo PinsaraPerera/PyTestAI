@@ -5,7 +5,7 @@ import logging
 import requests
 import time
 from pathlib import Path
-from .utils import get_api_key, payload_setup, extract_marked_definitions, clean_api_response
+from .utils import _get_api_key, _payload_setup, _extract_marked_definitions, _clean_api_response
 from colorama import Fore, Style, init
 from tqdm import tqdm
 
@@ -35,13 +35,13 @@ def generate_test_cases(file_path: Path) -> str:
         raise FileNotFoundError(f"❌ File '{file_path}' not found.")
 
     # Extract source code from the file
-    source_code = extract_marked_definitions(file_path)
+    source_code = _extract_marked_definitions(file_path)
 
     # Get the DeepSeek API key
-    api_key = get_api_key()
+    api_key = _get_api_key()
 
     # Prepare the API request payload
-    payload = payload_setup(file_path=file_path, source_code=source_code, model="deepseek-chat", tempreture=1.0)
+    payload = _payload_setup(file_path=file_path, source_code=source_code, model="deepseek-chat", tempreture=1.0)
 
     # Call the DeepSeek API with retries
     headers = {
@@ -92,7 +92,7 @@ def generate_test_cases(file_path: Path) -> str:
     # test_code = "\n".join(line for line in test_code.splitlines() if line.strip())
 
     # Clean up the test code
-    test_code = clean_api_response(test_code)
+    test_code = _clean_api_response(test_code)
 
     # Save the test code to a file
     test_file_path = file_path.parent / f"test_{file_path.name}"

@@ -4,7 +4,7 @@ import re
 import ast
 from pathlib import Path
 
-def get_api_key() -> str:
+def _get_api_key() -> str:
     """
     Retrieves the DeepSeek API key from environment variables.
 
@@ -25,7 +25,7 @@ def get_api_key() -> str:
     
     return api_key
 
-def payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat", tempreture: int = 1.0) -> dict:
+def _payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat", tempreture: int = 1.0) -> dict:
     """
     Prepare the API request payload.
 
@@ -62,7 +62,7 @@ def payload_setup(file_path: str, source_code: str, model: str = "deepseek-chat"
     }
 
 # source code extraction
-def extract_marked_definitions(file_path: Path) -> str:
+def _extract_marked_definitions(file_path: Path) -> str:
     """Extracts imports and functions/classes marked with @include_in_test, keeping other decorators but removing @include_in_test."""
 
     # Example: source code with functions/classes marked for test generation
@@ -137,7 +137,7 @@ def extract_marked_definitions(file_path: Path) -> str:
 
     return extracted_code.strip()
 
-def clean_api_response(api_response: str) -> str:
+def _clean_api_response(api_response: str) -> str:
     """
     Extracts Python code from the API response while converting non-code parts into comments.
 
