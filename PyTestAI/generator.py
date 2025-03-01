@@ -6,7 +6,7 @@ import requests
 import time
 import re
 from pathlib import Path
-from .utils import get_api_key, payload_setup
+from .utils import get_api_key, payload_setup, extract_marked_definitions, clean_api_response
 from colorama import Fore, Style, init
 from tqdm import tqdm
 
@@ -17,7 +17,7 @@ init(autoreset=True)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
-MAX_RETRIES = 3  # Number of retries for API requests
+MAX_RETRIES = 3 
 
 def generate_test_cases(file_path: Path) -> str:
     """
@@ -35,15 +35,14 @@ def generate_test_cases(file_path: Path) -> str:
         logging.error(Fore.RED + f"❌ File '{file_path}' not found.")
         raise FileNotFoundError(f"❌ File '{file_path}' not found.")
 
-    # Read the source code
-    with open(file_path, "r", encoding="utf-8") as f:
-        source_code = f.read()
+    # Extract source code from the file
+    source_code = extract_marked_definitions(file_path)
 
     # Get the DeepSeek API key
     api_key = get_api_key()
 
     # Prepare the API request payload
-    payload = payload_setup(file_path=file_path, source_code=source_code)
+    payload = payload_setup(file_path=file_path, source_code=source_code, model="deepseek-chat", tempreture=1.0)
 
     # Call the DeepSeek API with retries
     headers = {
@@ -55,9 +54,9 @@ def generate_test_cases(file_path: Path) -> str:
         logging.info(Fore.CYAN + f"🔄 Generating test cases for file: {file_path} (Attempt {attempt}/{MAX_RETRIES})")
 
         # Display a progress bar while waiting for response
-        with tqdm(total=5, desc="Processing", bar_format="{l_bar}{bar} {remaining}") as progress_bar:
-            for _ in range(5):
-                time.sleep(1)  # Simulate waiting time
+        with tqdm(total=15, desc="Processing", bar_format="{l_bar}{bar} {remaining}") as progress_bar:
+            for _ in range(15):
+                time.sleep(1)
                 progress_bar.update(1)
 
         response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload)
@@ -81,15 +80,20 @@ def generate_test_cases(file_path: Path) -> str:
         raise RuntimeError("❌ Failed to generate test cases from API response.") from e
 
     # Convert explanations into comments and clean markdown artifacts
-    test_code = "\n".join(
-        f"# {line}" if line.strip() and not line.strip().startswith(("#", "```", "from", "import", "def", "assert"))
-        else line
-        for line in test_code.splitlines()
-    )
+    # test_code = "\n".join(
+    #     f"# {line}" if line.strip() and not line.strip().startswith(("#", "```", "from", "import", "def", "assert"))
+    #     else line
+    #     for line in test_code.splitlines()
+    # )
 
-    # Remove markdown code blocks and "bash" keyword if present
-    test_code = re.sub(r"```(\w+)?", "", test_code).strip()
-    test_code = test_code.replace("bash", "").strip()
+    # # Remove markdown code blocks and "bash" keyword if present
+    # test_code = re.sub(r"```(\w+)?", "", test_code).strip()
+    # test_code = test_code.replace("bash", "").strip()
+    # # Remove leading/trailing whitespace and empty lines
+    # test_code = "\n".join(line for line in test_code.splitlines() if line.strip())
+
+    # Clean up the test code
+    test_code = clean_api_response(test_code)
 
     # Save the test code to a file
     test_file_path = file_path.parent / f"test_{file_path.name}"
