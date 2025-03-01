@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="PyTestAI-Generator",
-    version="1.0.0",
+    version="2.0.0",
     packages=find_packages(include=["PyTestAI", "PyTestAI.*"]),  
     install_requires=[
         "requests>=2.25.1,<2.32.3",

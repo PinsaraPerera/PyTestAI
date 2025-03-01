@@ -1,7 +1,7 @@
 # PyTestAI-Generator
 
 `PyTestAI-Generator` is a **CLI tool** that automatically generates `pytest`-compatible test cases for your Python files using the **DeepSeek API**.  
-It creates a ready-to-run test file (`test_<filename>.py`) in the same directory, ensuring **proper imports and test coverage**.
+It creates a ready-to-run test file (`test_<filename>.py`) in the same directory, ensuring **proper imports and test coverage**.The new version requires users to mark the functions they want to generate test cases for with the `@include_in_test` decorator.
 
 ---
 
@@ -47,14 +47,26 @@ $env:DEEPSEEK_API_KEY="your_api_key_here"
 ---
 
 ## 🛠 Usage  
+### **New Usage Workflow**  
+Starting with this version, you must mark the functions or classes you want to generate test cases for with the `@include_in_test` decorator. After marking the relevant functions/classes, you can use the `pytestai` command to generate the tests.
 
-### **Basic Usage**  
-Run the `pytestai` command followed by the **path to your Python file**:  
-```bash
-pytestai path/to/your_file.py
-```
+1. **Mark Functions/Classes with `@include_in_test`**  
+   For every function or class you want to include in the test case generation, decorate it with `@include_in_test`. For example:
+   ```python
+   from PyTestAI import include_in_test
 
-This will generate a test file named **`test_your_file.py`** in the same directory.
+   @include_in_test
+   def add(a, b):
+       return a + b
+   ```
+
+2. **Generate the Test File**  
+   Once your functions are decorated, run the `pytestai` command followed by the **path to your Python file**:
+   ```bash
+   pytestai path/to/your_file.py
+   ```
+
+   This will generate a test file named **`test_your_file.py`** in the same directory.
 
 ---
 
@@ -63,9 +75,13 @@ This will generate a test file named **`test_your_file.py`** in the same directo
 Given a Python file **`math_ops.py`**:  
 ```python
 # math_ops.py
+from PyTestAI import include_in_test
+
+@include_in_test
 def add(a, b):
     return a + b
 
+@include_in_test
 def subtract(a, b):
     return a - b
 ```
@@ -115,21 +131,6 @@ def test_subtract():
     assert subtract(0, 0) == 0, "Subtraction of 0 and 0 should be 0"
     assert subtract(5, 0) == 5, "Subtraction of 5 and 0 should be 5"
     assert subtract(0, 5) == -5, "Subtraction of 0 and 5 should be -5"
-
-
-### How to Run the Tests
-# 1. Save the test file as `test_math_ops.py` in the same directory as `math_ops.py`.
-# 2. Run the tests using the `pytest` command in your terminal:
-   
-#    pytest test_math_ops.py
-   
-
-### Explanation
-# - The `test_add` function tests the `add` function with various scenarios, including positive numbers, negative numbers, and zero.
-# - The `test_subtract` function tests the `subtract` function with similar scenarios.
-# - Each test case uses `assert` to verify that the output of the function matches the expected result.
-# - If any assertion fails, pytest will provide a detailed error message indicating which test case failed and why.
-
 ```
 ---
 
@@ -177,5 +178,12 @@ If you have any issues or questions, feel free to open an **issue** on the
 ## 👨‍💻 Author  
 
 **[Pawan Perera](https://www.pawanperera.com)**  
-- GitHub: [PinsaraPerera](https://github.com/PinsaraPerera)  
+- GitHub: [Pawan Perera](https://github.com/PinsaraPerera)  
 - Email: 1pawanpinsara@gmail.com  
+
+---
+
+### **Important Change:**  
+In the new version, you must decorate each function or class you want to include in the test case generation with the `@include_in_test` decorator. If no decorator is applied, that function/class will be excluded from the generated test cases.
+
+
